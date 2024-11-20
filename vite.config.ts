@@ -6,4 +6,7 @@ import svgr from "vite-plugin-svgr";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [TanStackRouterVite(), react(), svgr()],
+  build: {
+    outDir: "dist",
+  },
 });
