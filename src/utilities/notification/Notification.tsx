@@ -1,9 +1,8 @@
-import React, {
+import {
   createContext,
   ReactNode,
   useContext,
   useState,
-  useEffect,
 } from "react";
 import NotificationContainer, {
   Notification,

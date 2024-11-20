@@ -1,9 +1,10 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import {  createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { AuthProvider, useAuth } from "./utilities/auth/AuthProvider";
+import { AuthProvider } from "./utilities/auth/AuthProvider";
 import { NotificationProvider } from "./utilities/notification/Notification";
+import InnerApp from "./InnerApp";
 
 import "./index.css";
 
@@ -21,16 +22,13 @@ declare module "@tanstack/react-router" {
   }
 }
 
-function InnerApp() {
-  const auth = useAuth();
-  return <RouterProvider router={router} context={{ auth }} />;
-}
+
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <NotificationProvider>
     <AuthProvider>
-        <InnerApp />
+        <InnerApp router={router} />
     </AuthProvider>
     </NotificationProvider>
  

@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { z, ZodSchema } from "zod";
+import { ZodSchema } from "zod";
 
 interface UseFormFieldProps<T> {
   schema: ZodSchema<T>;
@@ -23,7 +23,6 @@ export default function useFormField<T>({
 }: UseFormFieldProps<T>): UseFormFieldResult<T> {
   const [value, setValue] = useState<T>(initialValue as T);
   const [error, setError] = useState<string[]>([]);
-  console.log({ error, value });
 
   const isValid = schema.safeParse(value).success;
 

@@ -14,8 +14,6 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
-  verifyPasswordResetCode,
-  confirmPasswordReset,
 } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { FirebaseError } from "firebase/app";
@@ -90,8 +88,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } catch (error) {
         let errorMessage = "";
         if (error instanceof FirebaseError) {
-          console.log(error.message, error.code, error.name);
-
+        
           switch (error.code) {
             case "auth/invalid-credential":
               errorMessage = "Invalid credentials";
@@ -126,14 +123,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       console.log(res);
       return res;
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-  async function confirmPasswordReset() {
-    try {
-      const res = confirmPasswordReset();
-    } catch {}
-  }
 
   // Memoized logOut function
   const logOut = useCallback(async (): Promise<void> => {
@@ -161,11 +155,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const result = await signInWithPopup(auth, provider);
 
-      const credential = GoogleAuthProvider.credentialFromResult(result);
+   
 
-      const token = credential?.accessToken;
+  
       setUser(result.user);
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
   }
   // Memoize authValue to avoid unnecessary re-renders
   const authValue = useMemo(

@@ -9,15 +9,11 @@ export const Route = createFileRoute("/")({
       to: "/login",
     });
   },
- 
 });
 
-
 function RouteComponent() {
-  const auth = useAuth()
-  console.log(auth)
-  React.useEffect(() => {
-    console.log(12,auth)
-  })
+  const auth = useAuth();
+
+  React.useEffect(() => {});
   return <>Redirect to login as homepage</>;
 }
