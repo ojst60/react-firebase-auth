@@ -1,6 +1,4 @@
-import * as React from "react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useAuth } from "../utilities/auth/AuthProvider";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -12,8 +10,5 @@ export const Route = createFileRoute("/")({
 });
 
 function RouteComponent() {
-  const auth = useAuth();
-
-  React.useEffect(() => {});
   return <>Redirect to login as homepage</>;
 }
