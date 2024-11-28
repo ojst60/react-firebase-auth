@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@tanstack/react-router": "^1.79.0",
-    "add": "^2.0.6",
     "firebase": "^11.0.1",
     "notistack": "^3.0.1",
     "rc-util": "^5.43.0",

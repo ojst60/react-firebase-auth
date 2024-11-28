@@ -31,7 +31,8 @@ function LoginComponent() {
     e.preventDefault();
     const isEmailValid = email.validate();
     const isPasswordValid = password.validate();
-    if (isEmailValid || isPasswordValid) {
+
+    if (!isEmailValid || !isPasswordValid) {
       return;
     }
 
