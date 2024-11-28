@@ -17,8 +17,8 @@ export const Route = createFileRoute("/(auth)/_auth")({
 
 function RouteComponent() {
   return (
-    <div className="h-full w-full bg-gray-200 flex justify-center items-center">
-      <div className=" w-96 bg-white rounded-md">
+    <div className="min-h-screen w-full bg-gray-200 flex justify-center items-center p-4">
+      <div className="w-full max-w-md bg-white shadow-md">
         <Outlet />
       </div>
     </div>
