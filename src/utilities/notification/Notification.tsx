@@ -1,9 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import NotificationContainer, {
   Notification,
 } from "../../components/notification/Notification.tsx/NotificationContainer";
@@ -30,7 +25,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     message,
     timeout = 6000,
     type,
-    showCloseButton = true,
+    showCloseButton,
   }: AddNotification) => {
     const id = Date.now();
 

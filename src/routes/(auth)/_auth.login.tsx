@@ -45,7 +45,7 @@ function LoginComponent() {
     } else {
       const errorMessage = res.error ? res.error : "Failed to login";
 
-      notification?.addNotification({ message: errorMessage, type: "error" });
+      notification?.addNotification({ message: errorMessage, type: "error", timeout: 5_000 });
     }
   }
 

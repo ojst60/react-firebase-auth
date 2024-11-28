@@ -49,13 +49,12 @@ function SignupComponent() {
       password: password.value,
     });
 
-    await router.invalidate();
     if (res) {
       await auth.logOut();
       notification?.addNotification({
         message: "User created successfully",
         type: "success",
-        timeout:10_000
+        timeout:5_000
       });
     
 
