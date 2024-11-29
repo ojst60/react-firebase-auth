@@ -16,10 +16,10 @@ function RouteComponent() {
   }
 
   return (
-    <div>
-      <p>Welcome to your email user {auth.user?.email} .</p>
-      <p>display name: {auth.user?.displayName}</p>
-      <button onClick={logOutHandler}>Log out</button>
+    <div className="h-full text-center gap-2 flex-col flex justify-center items-center">
+      <p>Welcome to your homepage <strong>{auth.user?.email}</strong></p>
+      { auth.user?.displayName && <p>display name: <strong>{auth.user.displayName}</strong></p> }
+      <button className="border-1 bg-blue-500" onClick={logOutHandler}>Log out</button>
     </div>
   );
 }

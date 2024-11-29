@@ -15,10 +15,10 @@ export default function NotificationContainer({
   notifications,
 }: Props): JSX.Element {
   return (
-    <div className="fixed top-3 right-2 flex flex-col gap-{10px}">
+    <div className="fixed top-3 right-3 flex flex-col gap-3 z-50 max-h-[24vh] overflow-y-auto">
       {notifications.map((notification) => (
         <Notification
-        key={notification.id}
+          key={notification.id}
           type={notification.type}
           message={notification.message}
           id={notification.id}

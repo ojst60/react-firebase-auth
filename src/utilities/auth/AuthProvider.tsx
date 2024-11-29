@@ -25,17 +25,17 @@ type UserDetails = {
 };
 
 export type IAuthContext = {
-  createUser: (userDetails: UserDetails) => Promise<User>;
-  login: (userDetails: UserDetails) => Promise<Login>;
+  createUser: (userDetails: UserDetails) => Promise<Auth>;
+  login: (userDetails: UserDetails) => Promise<Auth>;
   user: User | null;
   logOut: () => Promise<void>;
-  passwordResetEmailHandler: (email: string) => void;
-  signInWithGoogle: () => Promise<void>;
+  passwordResetEmailHandler: (email: string) => Promise<void>;
+  signInWithGoogle: () => Promise<Auth>;
   loading: boolean;
   isAuthenticated: boolean;
 };
 
-export type Login = {
+export type Auth = {
   success: boolean;
   error?: string;
   user?: User;
@@ -56,18 +56,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const provider = new GoogleAuthProvider();
   provider.addScope("https://www.googleapis.com/auth/userinfo.profile");
 
-  const isAuthenticated = !!user;
-
   // Memoized createUser function to prevent re-creation on each render
   const createUser = useCallback(
-    async ({ email, password }: UserDetails): Promise<User> => {
+    async ({ email, password }: UserDetails): Promise<Auth> => {
       try {
         const res = await createUserWithEmailAndPassword(auth, email, password);
         setUser(res.user);
-        return res.user;
-      } catch (error) {
-        console.error(error);
-        throw error; // Re-throw the error for the caller to handle
+        return {
+          success: true,
+          user: res.user,
+        };
+      } catch (error: any) {
+        let errorMessage: string = "Failed to create new user";
+        if (error instanceof FirebaseError) {
+          if (error.code === "auth/email-already-in-use")
+            errorMessage = "Email already in use";
+        }
+
+        return {
+          success: false,
+          error: errorMessage,
+        };
       }
     },
     []
@@ -75,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Memoized login function
   const login = useCallback(
-    async ({ email, password }: UserDetails): Promise<Login> => {
+    async ({ email, password }: UserDetails): Promise<Auth> => {
       try {
         const validatedUser = UserSchema.parse({ email, password });
         const res = await signInWithEmailAndPassword(
@@ -83,12 +92,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           validatedUser.email,
           validatedUser.password
         );
+
+        if (!res.user.emailVerified) {
+          await signOut(auth);
+
+          return {
+            success: false,
+            error:
+              "Email not verified. Please verify your email before logging in.",
+          };
+        }
+
         setUser(res.user);
         return { success: true, user: res.user };
       } catch (error) {
         let errorMessage = "";
         if (error instanceof FirebaseError) {
-        
           switch (error.code) {
             case "auth/invalid-credential":
               errorMessage = "Invalid credentials";
@@ -115,19 +134,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     []
   );
 
-  async function passwordResetEmailHandler(email: string) {
+  async function passwordResetEmailHandler(email: string): Promise<void> {
     try {
-      const res = await sendPasswordResetEmail(auth, email, {
+      await sendPasswordResetEmail(auth, email, {
         handleCodeInApp: true,
         url: "http://localhost:5173/password_reset",
       });
-      console.log(res);
-      return res;
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   }
-
 
   // Memoized logOut function
   const logOut = useCallback(async (): Promise<void> => {
@@ -151,18 +167,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return unsubscribe;
   }, []);
 
-  async function signInWithGoogle() {
+  // Handles google sign in
+  const signInWithGoogle = useCallback(async (): Promise<Auth> => {
     try {
       const result = await signInWithPopup(auth, provider);
-
-   
-
-  
       setUser(result.user);
-    } catch (err) {
-      console.log(err)
+      return { success: true, user: result.user };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err.message,
+      };
     }
-  }
+  }, []);
+
   // Memoize authValue to avoid unnecessary re-renders
   const authValue = useMemo(
     () => ({
@@ -171,11 +189,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       user,
       logOut,
       loading,
-      isAuthenticated,
+      isAuthenticated: user !== null,
       signInWithGoogle,
       passwordResetEmailHandler,
     }),
-    [createUser, login, logOut, user, loading, isAuthenticated]
+    [createUser, login, logOut, user, loading, signInWithGoogle]
   );
 
   return (

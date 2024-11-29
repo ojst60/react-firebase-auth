@@ -1,10 +1,11 @@
 import * as React from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
 import { useAuth } from "../../utilities/auth/AuthProvider";
 import Textfield from "../../components/textField/Textfield";
 import { useNotification } from "../../utilities/notification/Notification";
 import useFormField from "../../utilities/formField/useFormField";
+import GoogleSignin from "../../components/googleSignin/GoogleSignin";
 
 export const Route = createFileRoute("/(auth)/_auth/login")({
   validateSearch: z.object({
@@ -17,6 +18,7 @@ function LoginComponent() {
   const notification = useNotification();
   const auth = useAuth();
   const navigate = Route.useNavigate();
+  const router = useRouter();
 
   const email = useFormField({
     initialValue: "",
@@ -41,11 +43,23 @@ function LoginComponent() {
       password: password.value,
     });
     if (res.success) {
-      navigate({ to: "/home" });
+      if (res.user?.emailVerified) {
+        await navigate({ to: "/home" });
+      } else {
+        notification?.addNotification({
+          message: "Need to verify Email. Please check you email",
+          type: "error",
+          showCloseButton: true,
+        });
+      }
     } else {
       const errorMessage = res.error ? res.error : "Failed to login";
 
-      notification?.addNotification({ message: errorMessage, type: "error", timeout: 5_000 });
+      notification?.addNotification({
+        message: errorMessage,
+        type: "error",
+        timeout: 5_000,
+      });
     }
   }
 
@@ -79,8 +93,9 @@ function LoginComponent() {
           Submit
         </button>
       </form>
+      <GoogleSignin navigateHandler={async () => await router.invalidate()} />
 
-      <Link to="/password_rest">Forgotten your pasoword ?</Link>
+      <Link to="/password_rest">Forgotten your password ?</Link>
 
       <p>
         Don't have an account?{" "}

@@ -23,7 +23,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   const addNotification = ({
     message,
-    timeout = 6000,
+    timeout = 2000,
     type,
     showCloseButton,
   }: AddNotification) => {

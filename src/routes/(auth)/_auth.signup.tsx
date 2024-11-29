@@ -1,12 +1,12 @@
 import React from "react";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { sendEmailVerification } from "firebase/auth";
 
 import { useAuth } from "../../utilities/auth/AuthProvider";
 import { useNotification } from "../../utilities/notification/Notification";
 import Textfield from "../../components/textField/Textfield";
-import { GoogleIcon } from "../../assets/images";
+import GoogleSignin from "../../components/googleSignin/GoogleSignin";
 import useFormField from "../../utilities/formField/useFormField";
 
 export const Route = createFileRoute("/(auth)/_auth/signup")({
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/(auth)/_auth/signup")({
 function SignupComponent() {
   const notification = useNotification();
   const auth = useAuth();
-  const router = useRouter();
+  const navigate = Route.useNavigate();
   const email = useFormField({
     initialValue: "",
     schema: z.string().email({ message: "Enter a valid email" }),
@@ -34,8 +34,6 @@ function SignupComponent() {
       .regex(/\d/, { message: "Must contain at least one number" }),
   });
 
-
-
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const isEmailValid = email.validate();
@@ -49,31 +47,33 @@ function SignupComponent() {
       password: password.value,
     });
 
-    if (res) {
+    if (res.success && res.user) {
       await auth.logOut();
+
+      await sendEmailVerification(res.user);
+
+      setTimeout(async () => {
+        email.setValue("");
+        password.setValue("");
+      }, 1000);
       notification?.addNotification({
         message: "User created successfully",
         type: "success",
-        timeout:5_000
+        timeout: 5_000,
       });
-    
-
-      await sendEmailVerification(res);
-
       notification?.addNotification({
         message: "Check your email for a verification email",
         type: "success",
-        showCloseButton: true
+        showCloseButton: true,
       });
-
-      setTimeout(async () => {
-        await auth.logOut();
-        email.setValue("");
-        password.setValue("");
-
-        
-      }, 1000);
+      return;
     }
+
+    notification.addNotification({
+      message: res.error!,
+      type: "error",
+      showCloseButton: true,
+    });
   }
 
   return (
@@ -111,27 +111,7 @@ function SignupComponent() {
         </button>
       </form>
 
-      <div className="flex justify-center flex-row h-1 mb-[10px] items-center">
-        <span className="bg-gray-400 h-[1px] grow-[1]"></span>
-        <span className="p-1">OR</span>
-        <span className="bg-gray-400 h-[1px] grow-[1]"></span>
-      </div>
-
-      <div>
-        <button></button>
-      </div>
-
-      <a
-        className="rounded-md outline-blue-300 flex w-full h-12 bg-blue-600 gap-2 items-center p-[22px] text-white hover:bg-blue-500 hover:text-white cursor-pointer hover:scale-105"
-        onClick={async () => {
-          await auth.signInWithGoogle();
-          await router.invalidate();
-        }}
-      >
-        <GoogleIcon className="h-[25px] w-[25px]" />
-
-        <span className="text-center flex-grow">Sign in with Google</span>
-      </a>
+      <GoogleSignin navigateHandler={() => navigate({ to: "/home" })} />
 
       <p>
         Already have an account ? <Link to="/login">Login</Link>{" "}
