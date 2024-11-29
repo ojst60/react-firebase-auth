@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           success: true,
           user: res.user,
         };
-      } catch (error: any) {
+      } catch (error) {
         let errorMessage: string = "Failed to create new user";
         if (error instanceof FirebaseError) {
           if (error.code === "auth/email-already-in-use")
@@ -173,10 +173,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const result = await signInWithPopup(auth, provider);
       setUser(result.user);
       return { success: true, user: result.user };
-    } catch (err: any) {
+    } catch (err) {
+      let message: string = "Error when trying to sign in";
+      if (err instanceof FirebaseError) {
+        message = err.message;
+      }
+
       return {
         success: false,
-        error: err.message,
+        error: message,
       };
     }
   }, []);
