@@ -135,10 +135,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   async function passwordResetEmailHandler(email: string): Promise<void> {
+    const url =
+      import.meta.env.MODE === "development"
+        ? import.meta.env.VITE_DEVELOPMENT_URL
+        : import.meta.env.VITE_PRODUCTION_URL;
     try {
       await sendPasswordResetEmail(auth, email, {
         handleCodeInApp: true,
-        url: "http://localhost:5173/password_reset",
+        url: `${url}/password_reset`,
       });
     } catch (err) {
       console.log(err);
