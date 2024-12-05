@@ -91,15 +91,15 @@ By using React Firebase Auth, developers can build secure and scalable React app
 
 ### Environment Variables
 
-VITE_FIREBASE_API_KEY=Firebase API key
-VITE_FIREBASE_AUTH_DOMAIN=Firebase Auth domain
-VITE_PROJECT_ID=Firebase Project ID
-VITE_STORAGE_BUCKET=Firebase Storage Bucket URL
-VITE_FIREBASE_MESSAGING_SENDER_ID=Firebase Messaging Sending ID
-VITE_APP_ID=Firebase App Id
-VITE_MEASUREMENT_ID=Firebase measurement Id
-VITE_PRODUCTION_URL=Production URL
-VITE_DEVELOPMENT_URL=Development URL
+- VITE_FIREBASE_API_KEY=Firebase API key
+- VITE_FIREBASE_AUTH_DOMAIN=Firebase Auth domain
+- VITE_PROJECT_ID=Firebase Project ID
+- VITE_STORAGE_BUCKET=Firebase Storage Bucket URL
+- VITE_FIREBASE_MESSAGING_SENDER_ID=Firebase Messaging Sending ID
+- VITE_APP_ID=Firebase App Id
+- VITE_MEASUREMENT_ID=Firebase measurement Id
+- VITE_PRODUCTION_URL=Production URL
+- VITE_DEVELOPMENT_URL=Development URL
 **Note**: Replace the placeholders in `.env.development` with actual values for your environment. Place `.env.development in` in project root folder
 
 ### Running the Project
