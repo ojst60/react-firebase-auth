@@ -1,8 +1,6 @@
 import React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { sendEmailVerification } from "firebase/auth";
-
 import { useAuth } from "../../utilities/auth/AuthProvider";
 import { useNotification } from "../../utilities/notification/Notification";
 import Textfield from "../../components/textField/Textfield";
@@ -47,9 +45,7 @@ function SignupComponent() {
       password: password.value,
     });
 
-    if (res.success && res.user) {
-      await auth.logOut();
-
+    if (res.success) {
       await auth.sendEmailAddressVerification();
 
       setTimeout(async () => {
@@ -59,13 +55,15 @@ function SignupComponent() {
       notification?.addNotification({
         message: "User created successfully",
         type: "success",
-        timeout: 5_000,
+        timeout: 8_000,
       });
       notification?.addNotification({
         message: "Check your email for a verification email",
         type: "success",
-        showCloseButton: true,
+        timeout: 8_000,
       });
+      await auth.logOut();
+
       return;
     }
 
@@ -104,7 +102,6 @@ function SignupComponent() {
 
         <button
           type="submit"
-          // disabled={isSubmitDisabled}
           className={`text-white text-xl rounded-md px-4 py-3 ${"bg-blue-500 hover:bg-blue-400"}`}
         >
           Submit

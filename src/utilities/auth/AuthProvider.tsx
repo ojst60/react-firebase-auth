@@ -15,6 +15,10 @@ import {
   signInWithPopup,
   sendPasswordResetEmail,
   sendEmailVerification,
+  setPersistence,
+  browserSessionPersistence,
+  browserLocalPersistence,
+  Persistence,
 } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { FirebaseError } from "firebase/app";
@@ -34,7 +38,7 @@ export type IAuthContext = {
   signInWithGoogle: () => Promise<Auth>;
   loading: boolean;
   isAuthenticated: boolean;
-  sendEmailAddressVerification: () => Promise<void>;
+  sendEmailAddressVerification: () => Promise<{ success: boolean }>;
 };
 
 export type Auth = {
@@ -62,10 +66,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       ? import.meta.env.VITE_DEVELOPMENT_URL
       : import.meta.env.VITE_PRODUCTION_URL;
 
+  async function setPersistState(persistState: Persistence): Promise<void> {
+    await setPersistence(auth, persistState);
+  }
+
   // Memoized createUser function to prevent re-creation on each render
   const createUser = useCallback(
     async ({ email, password }: UserDetails): Promise<Auth> => {
       try {
+        await setPersistState(browserSessionPersistence);
         const res = await createUserWithEmailAndPassword(auth, email, password);
         setUser(res.user);
         return {
@@ -92,6 +101,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = useCallback(
     async ({ email, password }: UserDetails): Promise<Auth> => {
       try {
+        await setPersistState(browserLocalPersistence);
         const validatedUser = UserSchema.parse({ email, password });
         const res = await signInWithEmailAndPassword(
           auth,
@@ -145,7 +155,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await sendEmailVerification(user!, { url });
       return { success: true };
     } catch (error) {
-      console.error(error)
+      console.error(error);
       return { success: false };
     }
   }
@@ -175,6 +185,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Handles google sign in
   const signInWithGoogle = useCallback(async (): Promise<Auth> => {
     try {
+      await setPersistState(browserLocalPersistence);
       const result = await signInWithPopup(auth, provider);
       setUser(result.user);
       return { success: true, user: result.user };
