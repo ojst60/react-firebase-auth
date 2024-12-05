@@ -13,6 +13,7 @@
 4. [Getting Started](#getting-started)
    - [Prerequisites](#prerequisites)
    - [Installation](#installation)
+   - [Enviroment variables](#environment-variables)
    - [Running the Project](#running-the-project)
 6. [Contact](#contact)
 
@@ -35,12 +36,21 @@ By using React Firebase Auth, developers can build secure and scalable React app
 
 ## Features
 
-- Account creation 
-- Account Login
-- Federated login using google account
-- Forgotten password
-- Password policy
-- Sign up flow error handling
+- ##### Email and Password Sign-Up
+   Users can register using their email and password.
+- ##### Email Verification
+   A verification email is sent to new users during sign-up.
+   Users cannot access the dashboard until they verify their email.
+- ##### Login with Email and Password
+   Users can log in using their email and password credentials.
+- ##### Google Authentication
+   Users can log in using their Google account via Firebase.
+- ##### Password Recovery
+   Users can reset their password via a password recovery link sent to their email.
+- ##### Resend Verification Email
+   If users haven't verified their email, they can request a resend of the verification email.
+- ##### Notification feedback and error handling
+   User feedback notification on authentication action
 
 ---
 
@@ -56,46 +66,53 @@ By using React Firebase Auth, developers can build secure and scalable React app
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (version 22 or higher)
-- [pnpm]
-- [Vite]
+- [Node.js](https://nodejs.org/) (version 20 or higher)
+- [pnpm](https://pnpm.io/)
+   If you dont have pnpm installed 
+   ```bash
+   npm install -g pnpm
+   ```
+
 
 ### Installation
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/your-username/your-repo.git
+   git clone https://github.com/ojst60/react-firebase-auth.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd your-repo
+   cd react-firebase-auth
    ```
 3. Install dependencies:
    ```bash
-   npm install
-   # or
-   yarn install
+   pnpm install
    ```
+
+### Environment Variables
+
+VITE_FIREBASE_API_KEY=Firebase API key
+VITE_FIREBASE_AUTH_DOMAIN=Firebase Auth domain
+VITE_PROJECT_ID=Firebase Project ID
+VITE_STORAGE_BUCKET=Firebase Storage Bucket URL
+VITE_FIREBASE_MESSAGING_SENDER_ID=Firebase Messaging Sending ID
+VITE_APP_ID=Firebase App Id
+VITE_MEASUREMENT_ID=Firebase measurement Id
+VITE_PRODUCTION_URL=Production URL
+VITE_DEVELOPMENT_URL=Development URL
+**Note**: Replace the placeholders in `.env.development` with actual values for your environment. Place `.env.development in` in project root folder
 
 ### Running the Project
 
 For development mode:
 ```bash
-npm run dev
+pnpm dev
 ```
-
-For production mode:
-```bash
-npm run build
-npm start
-```
-
----
 
 ## Contact
 
-[Julius Oyovwikigho] - [Julius4oyovwikigho@gmail.com]  
+[Julius Oyovwikigho](Julius4oyovwikigho@gmail.com)
 [Your LinkedIn Profile](www.linkedin.com/in/julius-o-09879)  
-[Project Link](https://github.com/your-username/your-repo)
+[Project Link](https://github.com/ojst60/react-firebase-auth)
 
 ---
