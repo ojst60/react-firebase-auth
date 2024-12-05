@@ -79,3 +79,10 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@layer base {
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
+}
