@@ -1,4 +1,3 @@
-import React from "react";
 import { GoogleIcon } from "../../assets/images";
 import { useAuth } from "../../utilities/auth/AuthProvider";
 import { useNotification } from "../../utilities/notification/Notification";
