@@ -12,7 +12,7 @@ export default function GoogleSignin({
   const auth = useAuth();
   const notification = useNotification();
   return (
-    <React.Fragment>
+    <div className="gap-3 flex flex-col">
       <div className="flex justify-center flex-row h-1 mb-[10px] items-center">
         <span className="bg-gray-400 h-[1px] grow-[1]"></span>
         <span className="p-1">OR</span>
@@ -20,7 +20,7 @@ export default function GoogleSignin({
       </div>
 
       <a
-        className="rounded-md outline-blue-300 flex w-full h-12 bg-blue-600 gap-2 items-center p-[22px] text-white hover:bg-blue-500 hover:text-white cursor-pointer hover:scale-105"
+        className="rounded-md outline-blue-300 flex w-full h-12 bg-blue-600 gap-2 items-center p-[22px] text-white hover:bg-blue-500 hover:text-white cursor-pointer"
         onClick={async () => {
           const res = await auth.signInWithGoogle();
           if (res.error) {
@@ -30,7 +30,7 @@ export default function GoogleSignin({
               timeout: 2000,
             });
           }
-        
+
           navigateHandler();
         }}
       >
@@ -38,6 +38,6 @@ export default function GoogleSignin({
 
         <span className="text-center flex-grow">Sign in with Google</span>
       </a>
-    </React.Fragment>
+    </div>
   );
 }

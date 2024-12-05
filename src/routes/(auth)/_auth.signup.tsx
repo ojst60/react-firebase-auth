@@ -50,7 +50,7 @@ function SignupComponent() {
     if (res.success && res.user) {
       await auth.logOut();
 
-      await sendEmailVerification(res.user);
+      await auth.sendEmailAddressVerification();
 
       setTimeout(async () => {
         email.setValue("");
@@ -77,7 +77,7 @@ function SignupComponent() {
   }
 
   return (
-    <div className="border-1 border-gray-400 w-full h-full p-7">
+    <div className="border border-gray-400 w-full h-full p-7">
       <h1 className="text-xl font-bold mt-2 pb-5">Sign up</h1>
 
       <form
@@ -113,7 +113,7 @@ function SignupComponent() {
 
       <GoogleSignin navigateHandler={() => navigate({ to: "/home" })} />
 
-      <p>
+      <p className="pt-2">
         Already have an account ? <Link to="/login">Login</Link>{" "}
       </p>
     </div>

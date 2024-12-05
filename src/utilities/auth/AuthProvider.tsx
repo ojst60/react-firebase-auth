@@ -14,6 +14,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   sendPasswordResetEmail,
+  sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { FirebaseError } from "firebase/app";
@@ -33,6 +34,7 @@ export type IAuthContext = {
   signInWithGoogle: () => Promise<Auth>;
   loading: boolean;
   isAuthenticated: boolean;
+  sendEmailAddressVerification: () => Promise<void>;
 };
 
 export type Auth = {
@@ -55,6 +57,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const provider = new GoogleAuthProvider();
   provider.addScope("https://www.googleapis.com/auth/userinfo.profile");
+  const url =
+    import.meta.env.MODE === "development"
+      ? import.meta.env.VITE_DEVELOPMENT_URL
+      : import.meta.env.VITE_PRODUCTION_URL;
 
   // Memoized createUser function to prevent re-creation on each render
   const createUser = useCallback(
@@ -92,17 +98,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           validatedUser.email,
           validatedUser.password
         );
-
-        if (!res.user.emailVerified) {
-          await signOut(auth);
-
-          return {
-            success: false,
-            error:
-              "Email not verified. Please verify your email before logging in.",
-          };
-        }
-
         setUser(res.user);
         return { success: true, user: res.user };
       } catch (error) {
@@ -135,10 +130,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   async function passwordResetEmailHandler(email: string): Promise<void> {
-    const url =
-      import.meta.env.MODE === "development"
-        ? import.meta.env.VITE_DEVELOPMENT_URL
-        : import.meta.env.VITE_PRODUCTION_URL;
     try {
       await sendPasswordResetEmail(auth, email, {
         handleCodeInApp: true,
@@ -146,6 +137,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async function sendEmailAddressVerification() {
+    try {
+      await sendEmailVerification(user!, { url });
+      return { success: true };
+    } catch (error) {
+      console.error(error)
+      return { success: false };
     }
   }
 
@@ -201,6 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       isAuthenticated: user !== null,
       signInWithGoogle,
       passwordResetEmailHandler,
+      sendEmailAddressVerification,
     }),
     [createUser, login, logOut, user, loading, signInWithGoogle]
   );

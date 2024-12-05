@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
 import { z } from "zod";
-import { useAuth } from '../../utilities/auth/AuthProvider';
-import { useEffect } from 'react';
+import { useAuth } from "../../utilities/auth/AuthProvider";
+import { useEffect } from "react";
 
 const fallback = "/home" as const;
 
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/(auth)/_auth")({
 });
 
 function RouteComponent() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated} = useAuth();
   const router = useRouter();
   const { redirect } = Route.useSearch();
 

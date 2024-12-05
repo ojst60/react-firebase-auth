@@ -19,7 +19,6 @@ function LoginComponent() {
   const auth = useAuth();
   const navigate = Route.useNavigate();
   const router = useRouter();
-
   const email = useFormField({
     initialValue: "",
     schema: z.string().email({ message: "Enter a valid email" }),
@@ -43,31 +42,27 @@ function LoginComponent() {
       password: password.value,
     });
     if (res.success) {
-      if (res.user?.emailVerified) {
-        await navigate({ to: "/home" });
-      } else {
-        notification?.addNotification({
-          message: "Need to verify Email. Please check you email",
-          type: "error",
-          showCloseButton: true,
-        });
-      }
-    } else {
-      const errorMessage = res.error ? res.error : "Failed to login";
+      // await router.invalidate();
 
-      notification?.addNotification({
-        message: errorMessage,
-        type: "error",
-        timeout: 5_000,
-      });
+      await navigate({ to: "/home" });
+      return;
     }
+    const errorMessage = res.error ? res.error : "Failed to login";
+
+    notification?.addNotification({
+      message: errorMessage,
+      type: "error",
+      timeout: 5_000,
+    });
   }
 
   return (
     <div className="border border-gray-400 w-full h-full p-7">
       <h1 className="text-xl font-bold mt-2 pb-5">Login</h1>
-
-      <form className="flex flex-col gap-4 mb-5" onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col justify-center gap-4 mb-5"
+        onSubmit={handleSubmit}
+      >
         <Textfield
           label="Email"
           type="text"
@@ -94,15 +89,15 @@ function LoginComponent() {
         </button>
       </form>
       <GoogleSignin navigateHandler={async () => await router.invalidate()} />
-
-      <Link to="/password_rest">Forgotten your password ?</Link>
-
-      <p>
-        Don't have an account?{" "}
-        <Link className="text-blue-600" to="/signup">
-          Sign up
-        </Link>
-      </p>
+      <div className="pt-2 flex flex-col gap-2">
+        <Link to="/password_rest">Forgotten your password ?</Link>
+        <p>
+          Don't have an account?{" "}
+          <Link className="text-blue-600" to="/signup">
+            Sign up
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
