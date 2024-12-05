@@ -55,12 +55,14 @@ function SignupComponent() {
       notification?.addNotification({
         message: "User created successfully",
         type: "success",
-        timeout: 8_000,
+        timeout: 20_000,
+        showCloseButton: true,
       });
       notification?.addNotification({
         message: "Check your email for a verification email",
         type: "success",
-        timeout: 8_000,
+        timeout: 20_000,
+        showCloseButton: true,
       });
       await auth.logOut();
 
